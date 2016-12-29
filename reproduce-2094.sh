@@ -4,6 +4,7 @@ repo="alpine"
 tag="latest"
 
 echo "===== Launch registry ====="
+docker stop registry_2094 && docker rm registry_2094
 docker run -e REGISTRY_STORAGE_DELETE_ENABLED=true -d --net=dev -p 5000:5000 --name registry_2094 registry
 
 echo "===== Install tree in registry container ====="
