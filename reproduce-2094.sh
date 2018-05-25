@@ -31,7 +31,7 @@ logmd "## Install tree in registry container"
 registry_exec apk add --no-cache tree
 tree_dump_cmd
 
-source_image=busybox@sha256:186694df7e479d2b8bf075d9e1b1d7a884c6de60470006d572350573bfa6dcd22
+source_image=busybox@sha256:186694df7e479d2b8bf075d9e1b1d7a884c6de60470006d572350573bfa6dcd2
 logmd "## Pull $source_image from docker hub"
 docker image pull $source_image 
 
