@@ -11,7 +11,7 @@ registry_host_port="5000"
 registry="localhost:$registry_host_port"
 
 container_name="registry_2094"
-logmd "## Launch registry"
+logmd "\n## Launch registry"
 docker container rm -vf $container_name
 docker container run \
   -e REGISTRY_STORAGE_DELETE_ENABLED=true \
@@ -27,19 +27,19 @@ tree_dump_cmd() {
   registry_exec du -sh $registry_data_directory 
 }
 
-logmd "## Install tree in registry container"
+logmd "\n## Install tree in registry container"
 registry_exec apk add --no-cache tree
 tree_dump_cmd
 
 source_image=busybox@sha256:186694df7e479d2b8bf075d9e1b1d7a884c6de60470006d572350573bfa6dcd2
-logmd "## Pull $source_image from docker hub"
+logmd "\n## Pull $source_image from docker hub"
 docker image pull $source_image 
 
 registry_image="$registry/$repo:$tag"
-logmd "## Tag as $registry_image"
+logmd "\n## Tag as $registry_image"
 docker image tag $source_image $registry_image 
 
-logmd "## Push $registry_image to local registry"
+logmd "\n## Push $registry_image to local registry"
 docker image push $registry_image
 tree_dump_cmd
 
@@ -55,24 +55,24 @@ tree_dump_cmd
 #done
 # tree_dump_cmd
 
-logmd "## Get manifest"
+logmd "\n## Get manifest"
 id=`curl -v -s -XGET -H "Accept: application/vnd.docker.distribution.manifest.v2+json" $registry/v2/$repo/manifests/$tag 2>&1 |
   grep 'Docker-Content-Digest' |
   awk '{ print $3 }' |
   tr -cd '[[:alnum:]]:'`
 
-logmd "## Delete manifest"
+logmd "\n## Delete manifest"
 curl -XDELETE -H "Accept: application/vnd.docker.distribution.manifest.v2+json" $registry/v2/$repo/manifests/$id
 tree_dump_cmd
 
-logmd "## Run garbage collector"
+logmd "\n## Run garbage collector"
 registry_exec registry garbage-collect /etc/docker/registry/config.yml
 tree_dump_cmd
 
-logmd "## Push again to local registry"
+logmd "\n## Push again to local registry"
 docker image push $registry_image
 tree_dump_cmd 
 
-logmd "## Remove and attempt to pull repushed image"
+logmd "\n## Remove and attempt to pull repushed image"
 docker image rm $registry_image
 docker image pull $registry_image 
