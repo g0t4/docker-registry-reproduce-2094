@@ -9,6 +9,7 @@ logmd() {
 local repo="busybox"
 local tag="latest"
 
+# should just rewrite this script to not use published port on host and just exec in to a dind container
 local registry_host_port="5200"
 local registry="localhost:$registry_host_port"
 
