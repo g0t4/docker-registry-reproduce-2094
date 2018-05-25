@@ -6,17 +6,17 @@ logmd() {
     echo "$@" | highlight --syntax md -O ansi    
 }
 
-repo="busybox"
-tag="latest"
+local repo="busybox"
+local tag="latest"
 
-registry_host_port="5000"
-registry="localhost:$registry_host_port"
+local registry_host_port="5000"
+local registry="localhost:$registry_host_port"
 
 logmd "\n## Cleanup before running repro"
 docker image rm $(docker image ls -q reproduce-2094)
 docker container rm -vf $container_name
 
-container_name="registry_2094"
+local container_name="registry_2094"
 logmd "\n## Launch registry"
 docker container run \
   -e REGISTRY_STORAGE_DELETE_ENABLED=true \
@@ -25,13 +25,20 @@ docker container run \
   --name $container_name \
   registry
 
-registry_data_directory="/var/lib/registry"
+local registry_data_directory="/var/lib/registry"
 registry_exec() { docker container exec -ti $container_name "$@" }
+unset prev_dump
 tree_dump_cmd() {
   step="$@" 
   docker container commit $container_name "reproduce-2094:$step"
-  registry_exec tree -ah $registry_data_directory
+  current_dump=$(registry_exec tree -ah $registry_data_directory)
+  echo $current_dump
   registry_exec du -sh $registry_data_directory 
+  if [[ -v prev_dump ]]; then
+    logmd "### fs changes:"
+    kdiff3 =(echo $prev_dump) =(echo $current_dump)
+  fi
+  prev_dump=$current_dump
 }
 
 logmd "\n## Install tree in registry container"
