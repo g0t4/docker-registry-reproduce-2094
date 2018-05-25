@@ -38,21 +38,19 @@ docker image tag $source_image $registry_image
 
 echo "===== Push $registry_image to local registry ====="
 docker image push $registry_image
-
 tree_dump_cmd
 
-echo "===== Get all layers ====="
-layers=`curl -s -XGET -H "Accept: application/vnd.docker.distribution.manifest.v2+json" $registry/v2/$repo/manifests/$tag |
-  grep digest  |
-  awk '{ print $2 }' |
-  tr -d '"' `
+#echo "===== Get all layers ====="
+#layers=`curl -s -XGET -H "Accept: application/vnd.docker.distribution.manifest.v2+json" $registry/v2/$repo/manifests/$tag |
+#  grep digest  |
+#  awk '{ print $2 }' |
+#  tr -d '"' `
 
-echo "===== Delete all layers ====="
-for l in $layers; do
-  curl -XDELETE -H "Accept: application/vnd.docker.distribution.manifest.v2+json" $registry/v2/$repo/blobs/$l
-done
-
-tree_dump_cmd
+#echo "===== Delete all layers ====="
+#for l in $layers; do
+#  curl -XDELETE -H "Accept: application/vnd.docker.distribution.manifest.v2+json" $registry/v2/$repo/blobs/$l
+#done
+# tree_dump_cmd
 
 echo "===== Get manifest ====="
 id=`curl -v -s -XGET -H "Accept: application/vnd.docker.distribution.manifest.v2+json" $registry/v2/$repo/manifests/$tag 2>&1 |
