@@ -9,7 +9,7 @@ logmd() {
 local repo="busybox"
 local tag="latest"
 
-local registry_host_port="5000"
+local registry_host_port="5200"
 local registry="localhost:$registry_host_port"
 
 logmd "\n## Cleanup before running repro"
