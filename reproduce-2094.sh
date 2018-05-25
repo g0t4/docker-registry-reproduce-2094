@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# TODO - commit an image at different steps to freeze filesystem for inspection if I want to see the files, can then auto diff in this script too!
+
 logmd() {
     echo "$@" | highlight --syntax md -O ansi    
 }
