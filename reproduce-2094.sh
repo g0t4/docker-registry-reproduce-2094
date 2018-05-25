@@ -13,6 +13,7 @@ local registry_host_port="5000"
 local registry="localhost:$registry_host_port"
 
 logmd "\n## Cleanup before running repro"
+rm temp/*.txt
 docker image rm $(docker image ls -q reproduce-2094)
 docker container rm -vf $container_name
 
