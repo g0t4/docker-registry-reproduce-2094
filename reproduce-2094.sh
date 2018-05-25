@@ -107,4 +107,8 @@ logmd "\n## Pushing again, after restart, this should work:"
 docker image push $registry_image
 tree_dump_cmd "70-after-push-after-restart"
 
+logmd "\n## Attempt pull again:"
+docker image rm $registry_image
+docker image pull $registry_image 
+
 echo
