@@ -33,10 +33,11 @@ tree_dump_cmd() {
   docker container commit $container_name "reproduce-2094:$step"
   current_dump=$(registry_exec tree -ah $registry_data_directory)
   echo $current_dump
+  echo $current_dump > "temp/$step.txt"
   registry_exec du -sh $registry_data_directory 
   if [[ -v prev_dump ]]; then
     logmd "### fs changes:"
-    kdiff3 =(echo $prev_dump) =(echo $current_dump)
+    diff -y =(echo $prev_dump) =(echo $current_dump)
   fi
   prev_dump=$current_dump
 }
@@ -69,6 +70,7 @@ tree_dump_cmd "10-after-first-image-push"
 #done
 # tree_dump_cmd "20-after-delete-layers"
 
+# leaving GET to pull digest even though I current explicitly pull busybox by digest and so I have it already... this is if I change that image, I won't get owned nor have to lookup the new digest if I don't want to pull by digest
 logmd "\n## Get manifest"
 id=`curl -v -s -XGET -H "Accept: application/vnd.docker.distribution.manifest.v2+json" $registry/v2/$repo/manifests/$tag 2>&1 |
   grep 'Docker-Content-Digest' |
@@ -90,12 +92,3 @@ tree_dump_cmd "50-after-second-push"
 logmd "\n## Remove and attempt to pull repushed image"
 docker image rm $registry_image
 docker image pull $registry_image 
-
-
-unset prev_s
-for s in $(docker image ls --format="{{.Tag}}" reproduce-2094 | sort -h); do 
-  if [[ -v prev_s ]]; then
-    echo kdiff3 $prev_s $s
-  fi
-  prev_s=$s
-done
