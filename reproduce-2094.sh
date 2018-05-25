@@ -94,6 +94,7 @@ docker image push $registry_image
 tree_dump_cmd "50-after-second-push" 
 
 logmd "\n## Remove and attempt to pull repushed image"
+# remove may not be necessary but I want to make sure a pull truly fails so I rm locally
 docker image rm $registry_image
 docker image pull $registry_image 
 
@@ -103,7 +104,9 @@ logmd "\n## Restart registry will fix cache invalidation bug so we can push imag
 docker container restart $container_name
 tree_dump_cmd "60-after-restart"
 
-logmd "\n## Pushing again, after restart, this should work:"
+logmd "\n## Attempt another push after restart (need to pull,tag,push since image was rm'd before)"
+docker image pull $source_image 
+docker image tag $source_image $registry_image 
 docker image push $registry_image
 tree_dump_cmd "70-after-push-after-restart"
 
