@@ -13,12 +13,13 @@ local tag="latest"
 local registry_host_port="5200"
 local registry="localhost:$registry_host_port"
 
+local container_name="registry_2094"
+
 logmd "\n## Cleanup before running repro"
 rm temp/*.txt
 docker image rm $(docker image ls -q reproduce-2094)
 docker container rm -vf $container_name
 
-local container_name="registry_2094"
 logmd "\n## Launch registry"
 docker container run \
   -e REGISTRY_STORAGE_DELETE_ENABLED=true \
