@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env zsh
 
 # TODO - commit an image at different steps to freeze filesystem for inspection if I want to see the files, can then auto diff in this script too!
 
