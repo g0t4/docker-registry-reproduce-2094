@@ -95,3 +95,15 @@ tree_dump_cmd "50-after-second-push"
 logmd "\n## Remove and attempt to pull repushed image"
 docker image rm $registry_image
 docker image pull $registry_image 
+
+
+# One approach: restart after GC:
+logmd "\n## Restart registry will fix cache invalidation bug so we can push image again"
+docker container restart $container_name
+tree_dump_cmd "60-after-restart"
+
+logmd "\n## Pushing again, after restart, this should work:"
+docker image push $registry_image
+tree_dump_cmd "70-after-push-after-restart"
+
+echo
