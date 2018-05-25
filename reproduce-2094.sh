@@ -21,6 +21,7 @@ docker image rm $(docker image ls -q reproduce-2094)
 docker container rm -vf $container_name
 
 logmd "\n## Launch registry"
+# config docs: https://docs.docker.com/registry/configuration/
 docker container run \
   -e REGISTRY_STORAGE_DELETE_ENABLED=true \
   -d \
